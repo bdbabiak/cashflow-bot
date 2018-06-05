@@ -41,7 +41,7 @@ export class GdaxEmaStockHandler {
     },
     private productList: string[],
     private options: IOptions = {
-      candlePeriod: 3600,
+      candlePeriod: 900,
       candlesCount: { fast: 9, slow: 34 },
     },
   ) {
@@ -58,7 +58,7 @@ export class GdaxEmaStockHandler {
 
   public socketInit(): boolean {
     this.api.socket.on(
-      'open', 
+      'open',
       () => console.log('Gdax socket for price watching is running'),
     );
 
@@ -70,7 +70,7 @@ export class GdaxEmaStockHandler {
       this.api.socket.on('message', (message): void => {
         if (message.hasOwnProperty('type') && message.type === 'ticker') {
           const key: number = this.priceLoses.findIndex(v => v.product === message.product_id);
-        
+
           this.priceLoses[key].bid = parseFloat(message.best_bid);
           this.priceLoses[key].ask = parseFloat(message.best_ask);
         }
@@ -96,7 +96,7 @@ export class GdaxEmaStockHandler {
           (coin, key): Promise<number> => timingWrapper(
             async () => {
               const { bid } = await this.api.public.getProductTicker(`${coin.currency}-USD`);
-            
+
               return parseFloat(bid) * parseFloat(coin.available);
             },
             334 * key,
@@ -164,7 +164,7 @@ export class GdaxEmaStockHandler {
           v => v.currency === product.title.replace('-USD', ''),
         );
         const available = coinBalance !== undefined ? coinBalance.available : '0';
-        
+
         if (parseFloat(available) <= parseFloat(product.minQty)) {
           return { ...product, side: 'buy' };
         }
@@ -207,7 +207,7 @@ export class GdaxEmaStockHandler {
         console.log(val);
         const amount = acc[val.side] + parseFloat(val.usd_volume);
         const object = { [ val.side ]: amount };
-        
+
         return { ...acc, ...object };
       }, { buy: 0, sell: 0 });
 
@@ -229,7 +229,7 @@ export class GdaxEmaStockHandler {
     });
 
     console.log(orderRequest);
-    
+
     const orderResult: BaseOrderInfo = await timingWrapper(
       async (): Promise<BaseOrderInfo> => {
         const activeOrder = await this.api.private.getOrder(orderRequest.id);
@@ -256,9 +256,9 @@ export class GdaxEmaStockHandler {
       symbol: orderResult.product_id,
       fee: orderResult.fill_fees,
     }, 'gdax');
-    
+
     console.log(dbOrderInsertion);
-    
+
     if (dbOrderInsertion === null) {
       return false;
     }

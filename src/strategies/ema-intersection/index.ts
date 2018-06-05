@@ -53,14 +53,14 @@ export interface IStockHandler {
 
 
 export class EMAIntersection {
-  private loopTime: number = 3600; // in seconds
+  private loopTime: number = 900; // in seconds
   private coinAmount: number = 100;
   private products: IProduct[] = [];
   private ticker: NodeJS.Timer | boolean;
   private emaLines: IProductAverages[] = [];
   private stopLosses: { product: string, price: number | boolean }[];
   private priceTicker: NodeJS.Timer | boolean = false;
-  
+
   constructor(public stockHandler: IStockHandler) {
     this.stopLosses = this.stockHandler.productList.map(
       (v: string) => ({ product: v, price: false }),
@@ -73,7 +73,7 @@ export class EMAIntersection {
       this.loopTime * 1000,
     );
 
-    this.stockHandler.activatePriceListener();    
+    this.stockHandler.activatePriceListener();
   }
 
   public async doScalping(): Promise<boolean> {
@@ -84,7 +84,7 @@ export class EMAIntersection {
         async () => {
           const { ask, bid } = this.stockHandler.priceLoses.find(v => v.product === product.title);
           const stopLossKey = this.stopLosses.findIndex(v => v.product === product.title);
-          
+
           if (product.side === 'sell') {
             if (ask > this.stopLosses[stopLossKey].price) {
               this.stopLosses[stopLossKey].price = ask;
@@ -92,7 +92,7 @@ export class EMAIntersection {
 
               return true;
             }
-            
+
             if (ask <= (this.stopLosses[stopLossKey].price - 100)) {
               console.log(`\r\nПродаю ${product.qty} ${product.title} по цене ${product.bid}`);
               return await this.stockHandler.makeOrder(
@@ -109,7 +109,7 @@ export class EMAIntersection {
             if (ask >= (this.stopLosses[stopLossKey].price - 100)) {
 
               console.log(`\r\nПокупаю ${product.qty} ${product.title} по цене ${product.ask}`);
-              
+
               return await this.stockHandler.makeOrder(
                 product.qty.toString(),
                 'buy',
@@ -123,7 +123,7 @@ export class EMAIntersection {
           }
         },
         1000,
-      ), 
+      ),
     ));
 
     return true;
@@ -177,7 +177,7 @@ export class EMAIntersection {
   }
 
   /* WITH PRICE TICKER -> NOT RECOMENDED
-  
+
   public async doTrading(product: IProduct): Promise<boolean> {
     try {
       const { fast, slow } = this.emaLines.find(v => v.coin === product.title);
@@ -189,10 +189,10 @@ export class EMAIntersection {
         `\r\nslow`, slow,
       );
 
-      
+
       if (fast[fast.length - 1] > slow[slow.length - 1]) {
         if (fast[fast.length - 2] < slow[slow.length - 2]) {
-          
+
           if (product.side === 'buy') {
             console.log(`\r\nПокупаю ${product.qty} ${product.title} по цене ${product.ask}`);
 
@@ -203,7 +203,7 @@ export class EMAIntersection {
               `${this.stockHandler.title !== 'binance' ? 'market' : 'MARKET'}`,
               product,
             );
-            
+
             return await this.installPriceTicker(product, true);
           }
 
@@ -230,7 +230,7 @@ export class EMAIntersection {
 
         if (product.side === 'sell') {
           console.log(`\r\nПродаю ${product.qty} ${product.title} по цене ${product.ask}`);
-          
+
           return await this.stockHandler.makeOrder(
             product.qty.toString(),
             'sell',
@@ -297,13 +297,13 @@ export class EMAIntersection {
         const productAverages = await findProductAverages<IProductAverages>(
           this.stockHandler.title, product.title,
         );
-      
+
         if (productAverages === null) {
           return true;
         }
 
         const { stock, coin, fast, slow } = productAverages;
-        
+
         this.emaLines.push({
           fast: fast.filter((v, k) => k > fast.length - 5),
           slow: slow.filter((v, k) => k > slow.length - 5),

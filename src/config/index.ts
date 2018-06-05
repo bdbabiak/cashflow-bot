@@ -19,7 +19,7 @@ export const exchanges = {
     secret: 'your secret here',
     passphrase: 'your passphrase here',
     coins: [
-      'BTC-USD',
+      'ETH-USD',
       // 'LTC-USD',
       // 'ETH-USD',
     ],
@@ -29,7 +29,7 @@ export const exchanges = {
     key: 'your key here',
     secret: 'your secret here',
     coins: [
-      'BTCUSD',
+      'BNKBTC',
       // 'LTCUSD',
       // 'ETHUSD',
     ],

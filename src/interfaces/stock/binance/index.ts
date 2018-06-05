@@ -26,11 +26,11 @@ export class BinanceEmaStockHandler {
     private api: BinanceApiWrapper,
     private productList: string[],
     private options: IOptions = {
-      candlesPeriod: '1h',
+      candlesPeriod: '15m',
       candlesCount: { fast: 9, slow: 34 },
     },
   ) {
-    this.priceLoses = this.productList.map(v => ({ product: v, ask: false, bid: false }));  
+    this.priceLoses = this.productList.map(v => ({ product: v, ask: false, bid: false }));
   }
 
   public async handlerInit(): Promise<{ amount: number, products: IProduct[] }> {
@@ -43,7 +43,7 @@ export class BinanceEmaStockHandler {
 
   public socketInit(): boolean {
     this.socket = new WebSocket('wss://stream.binance.com:9443/stream?streams=btcusdt@ticker');
-  
+
     this.socket.on('open', () => {
       console.log('Binance socket for price watching is running');
     });
@@ -58,7 +58,7 @@ export class BinanceEmaStockHandler {
 
         if (ticker.data.hasOwnProperty('e') && ticker.data.e === '24hrTicker') {
           const key: number = this.priceLoses.findIndex(v => v.product === ticker.data.s);
-        
+
           this.priceLoses[key].bid = parseFloat(ticker.data.b);
           this.priceLoses[key].ask = parseFloat(ticker.data.a);
         }
@@ -204,7 +204,7 @@ export class BinanceEmaStockHandler {
         const side = val.isBuyer === true ? 'buy' : 'sell';
         const amount = acc[side] + (parseFloat(val.price) * parseFloat(val.qty)) - parseFloat(val.commission);
         const object = { [ side ]: amount };
-        
+
         return { ...acc, ...object };
       }, { buy: 0, sell: 0 });
 
@@ -233,7 +233,7 @@ export class BinanceEmaStockHandler {
       orderResult = await timingWrapper<IOrderResult>(
         async () => {
           const activeOrder: IOrderResult = await this.api.getOrder(orderRequest.orderId, symbol);
-    
+
           if (activeOrder.status === 'PARTIALLY_FILLED') {
             const cancelRequest: ICanceledOrder = await this.api.cancelOrder(orderRequest.orderId, symbol);
           }
@@ -261,7 +261,7 @@ export class BinanceEmaStockHandler {
     if (dbOrderInsertion === null) {
       return false;
     }
-    
+
     return true;
 
   }
@@ -326,7 +326,7 @@ export class BinanceEmaStockHandler {
         ),
       };
     }));
-    
+
   }
-  
+
 }

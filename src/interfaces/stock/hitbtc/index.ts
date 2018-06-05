@@ -43,7 +43,7 @@ export class HitBtcEmaStockHandler {
     private api: HitBtcApiWrapper,
     public productList: string[],
     private options: IOptions = {
-      candlePeriod: 'H1',
+      candlePeriod: 'M15',
       candlesCount: { fast: 9, slow: 34 },
     },
   ) {
@@ -60,7 +60,7 @@ export class HitBtcEmaStockHandler {
 
   public socketInit(): boolean {
     this.socket = new WebSocket('wss://api.hitbtc.com/api/2/ws');
-    
+
     this.socket.on('open', () => {
       this.productList.forEach(
         (product: string) => this.socket.send(JSON.stringify({
@@ -230,7 +230,7 @@ export class HitBtcEmaStockHandler {
         v => v.currency === product.title.replace('USD', ''),
       );
       const available = coinBalance !== undefined ? coinBalance.available : '0';
-      
+
       if (parseFloat(available) <= parseFloat(product.minQty)) {
         return { ...product, side: 'buy' };
       }
@@ -243,7 +243,7 @@ export class HitBtcEmaStockHandler {
     duration: { start: string, end: string },
   ): Promise<number> {
     const from = moment(duration.start).valueOf();
-    const till = moment(duration.end).valueOf(); 
+    const till = moment(duration.end).valueOf();
     const trades: ITrade[] = (await this.api.getTradesHistory({ limit: 1000 }))
       .filter(
         v => moment(v.timestamp).valueOf() >= from && moment(v.timestamp).valueOf() <= till,
@@ -267,10 +267,10 @@ export class HitBtcEmaStockHandler {
       .reduce((acc, val) => {
         const amount = acc[val.side] + val.amount;
         const object = { [ val.side ]: amount };
-        
+
         return { ...acc, ...object };
       }, { buy: 0, sell: 0 });
-    
+
     console.log(buy, sell);
 
     return sell - buy;
@@ -306,7 +306,7 @@ export class HitBtcEmaStockHandler {
       );
       const available = coinBalance !== undefined ? coinBalance.available : '0';
       const { ask, bid } = this.priceLoses.find(v => v.product === product.title);
-      
+
       if (parseFloat(available) <= parseFloat(product.minQty)) {
 
         return {
