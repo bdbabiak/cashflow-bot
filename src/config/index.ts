@@ -8,9 +8,9 @@ export const exchanges = {
     key: 'your key here',
     secret: 'your secret here',
     coins: [
-      'BTCUSDT',
+      // 'BTCUSDT',
       // 'LTCUSDT',
-      // 'ETHUSD',
+      'ETHUSDT',
     ],
   },
   gdax: {
@@ -24,7 +24,7 @@ export const exchanges = {
       // 'ETH-USD',
     ],
   },
-  hitbtc: {
+  /*hitbtc: {
     url: 'https://api.hitbtc.com/api/2',
     key: 'your key here',
     secret: 'your secret here',
@@ -33,5 +33,5 @@ export const exchanges = {
       // 'LTCUSD',
       // 'ETHUSD',
     ],
-  },
+  },*/
 };
