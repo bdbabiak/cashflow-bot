@@ -41,7 +41,7 @@ export class GdaxEmaStockHandler {
     },
     private productList: string[],
     private options: IOptions = {
-      candlePeriod: 900,
+      candlePeriod: 3600,
       candlesCount: { fast: 9, slow: 34 },
     },
   ) {

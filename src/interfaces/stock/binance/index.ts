@@ -26,7 +26,7 @@ export class BinanceEmaStockHandler {
     private api: BinanceApiWrapper,
     private productList: string[],
     private options: IOptions = {
-      candlesPeriod: '15m',
+      candlesPeriod: '1h',
       candlesCount: { fast: 9, slow: 34 },
     },
   ) {
