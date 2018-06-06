@@ -1,6 +1,6 @@
 import { IStockHandler, EMAIntersection } from '../../strategies/ema-intersection';
 import { AbstractApiWrapper } from '../../lib/api/abstract-api-wrapper';
-import { PublicClient, AuthenticatedClient } from 'hitbtc';
+import { PublicClient, AuthenticatedClient } from 'gdax';
 
 
 class RobotFactory {

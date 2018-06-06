@@ -29,7 +29,7 @@ export const exchanges = {
     key: 'your key here',
     secret: 'your secret here',
     coins: [
-      'BNKBTC',
+      'BTCUSD',
       // 'LTCUSD',
       // 'ETHUSD',
     ],
