@@ -53,7 +53,7 @@ export interface IStockHandler {
 
 
 export class EMAIntersection {
-  private loopTime: number = 900; // in seconds
+  private loopTime: number = 3600; // in seconds
   private coinAmount: number = 100;
   private products: IProduct[] = [];
   private ticker: NodeJS.Timer | boolean;
