@@ -8,9 +8,9 @@ export const exchanges = {
     key: 'your key here',
     secret: 'your secret here',
     coins: [
-      // 'BTCUSDT',
+      'BTCUSDT',
       // 'LTCUSDT',
-      'ETHUSDT',
+      // 'ETHUSDT',
     ],
   },
   gdax: {
